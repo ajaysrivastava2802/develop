@@ -1,5 +1,6 @@
 // Program to create a Linked List class with 3 nodes
 using System;
+using System.Collections.Generic;
 public class LinkedList{
     public Node head;
     public class Node{
@@ -30,7 +31,7 @@ public class LinkedList{
         else
         return 1 + Convert.ToInt16(LengthThroughRec(m.next));
     }
-    public void AddNodeAtLast(int Val)
+    public Node AddNodeAtLast(int Val)
     {
         //Check if linked list is empty
         Node n=head;
@@ -47,21 +48,24 @@ public class LinkedList{
         n.next=m;
         m.next=null;
         }
+        return head;
     }
 
-    public void AddNodeAtStart(int Val)
+    public Node AddNodeAtStart(Node head, int Val)
     {
-        Node n=head;
-        Node first=new Node(Val);
-        if(n == null)
+        Node newNode=new Node(Val);
+        Node curr=head;
+        if(curr==null)
         {
-            head = first;
-            first.next=null;
+            head=newNode;
+            newNode.next=null;
+            return head;
         }
         else{
-        first.next=head;
-        head=first;
+            newNode.next=head;
+            head=newNode;
         }
+        return head;
     }
     public void AddNodeAfterGivenNode(int givenVal, int val)
     {
@@ -81,6 +85,46 @@ public class LinkedList{
             givenNode.next=n.next.next;
             n.next.next=givenNode;
         }
+    }
+    public Node InsertNodeAtPosition(Node llist, int data, int position)
+    {
+        Node curr=llist;
+        Node newNode=new Node(data);
+        Node prev=null;
+        int count=0;
+        if(position==0 && llist==null)
+        {
+            llist=newNode;
+            newNode.next=null;          
+        }
+        else 
+        {
+            while(curr!=null)
+            {
+                if(position==count && prev==null)
+                {
+                    newNode.next=curr;
+                    llist=newNode;
+                    break;
+                }
+                if(position==count && prev!=null)
+                {
+                   prev.next=newNode;
+                   newNode.next=curr;
+                   break;
+                }
+                if(curr.next==null){
+                    curr.next=newNode;
+                    newNode.next=null;
+                    break;
+                }
+                
+                prev=curr;
+                curr=curr.next;
+                count++;
+            }
+        }
+        return llist;
     }
     public void DeleteANodeWithGivenKey(int val)
     {
@@ -487,19 +531,140 @@ public class LinkedList{
            Console.WriteLine("The middle element is "+slow_ptr.data);
        }
     }
+    public int DetectLengthOfLoop(Node head)
+    {
+        int length=1;
+        Node curr=null;
+        Node slow_ptr=head;
+        Node fast_ptr=head;
+        while(slow_ptr!=null && fast_ptr!=null && fast_ptr.next!=null)
+        {
+            slow_ptr=slow_ptr.next;
+            fast_ptr=fast_ptr.next.next;
+            if(slow_ptr==fast_ptr)
+            {
+                curr=slow_ptr;
+                break;
+            }
+        }
+        Node temp=curr;
+        while(temp.next!=curr)
+        {
+            length++;
+            temp=temp.next;
+        }
+
+        return length;
+    }
+    public bool IfPalindrome(Node head)
+    {
+        Node m=head;
+        Node fast_ptr=head;
+        Node slow_ptr=head;
+        Node middleNode=null;
+        bool isPalindrome=true;
+        while(fast_ptr!=null && slow_ptr!=null && fast_ptr.next!=null)
+        {
+            slow_ptr=slow_ptr.next;
+            fast_ptr=fast_ptr.next.next;
+            if(fast_ptr==slow_ptr)
+            {
+                break;
+            }
+        }
+        middleNode=slow_ptr;
+       Stack<Node> stackData=new Stack<Node>();
+       while(middleNode!=null)
+       {
+           stackData.Push(middleNode);
+           middleNode=middleNode.next;
+       }
+       while(m!=slow_ptr.next)
+       {
+           Node temp=stackData.Pop();
+           if(m.data==temp.data)
+           {
+               m=m.next;
+               continue;
+           }
+           else
+           {
+               isPalindrome=false;
+               break;
+           }
+       }
+       return isPalindrome;
+    }
+    public bool IfPalindromeAnother(Node head)
+    {
+        Node curr=head;
+        Stack<Node> m= new Stack<Node>();
+        bool isPalindrome=true;
+        while(curr!=null)
+        {
+            m.Push(curr);
+            curr=curr.next;
+        }
+        Node curr2=head;
+        while(curr2!=null)
+        {
+            Node temp=m.Pop();
+            if(curr2.data == temp.data)
+            {
+                curr2=curr2.next;
+                continue;
+            }
+            else{
+                isPalindrome=false;
+                break;
+            }
+        }
+        return isPalindrome;
+    }
+    //Recursive approach to remove duplicates is the best
+    public void DeleteDuplicatesSortedLinkedList(Node head)
+    {
+        if(head==null)
+        return;
+        if(head.next!=null)
+            {                
+                if(head.data==head.next.data)
+                {
+                    head.next=head.next.next;
+                    DeleteDuplicatesSortedLinkedList(head);
+                }
+                else
+                {
+                    DeleteDuplicatesSortedLinkedList(head.next);
+                }
+            }
+    }
     public static void Main(String[] args)
     {
         LinkedList lld=new LinkedList();
         lld.head = new Node(8);
         Node second= new Node(5);
-        Node third= new Node(13);
+        Node third= new Node(5);
         lld.head.next = second;
         second.next = third;
-        //lld.AddNodeAtLast(15);
-        //lld.AddNodeAtStart(2);
-        Node fourth=new Node(2);
-        third.next=fourth;
-        third.next.next=new Node(10);
+        //lld.head=lld.AddNodeAtLast(15);
+        // lld.PrintList();
+        //lld.head = lld.AddNodeAtStart(lld.head, 2);
+        //lld.PrintList();
+        //lld.head=lld.InsertNodeAtPosition(lld.head, 20, 0);
+        Node m=new Node(4);
+        third.next=m;
+        //m.next=second;
+        Node n=new Node(3);
+        m.next=n;
+        //bool checkPal=lld.IfPalindromeAnother(lld.head);
+        //Console.WriteLine(checkPal);
+        lld.DeleteDuplicatesSortedLinkedList(lld.head);
+        lld.PrintList();
+       // lld.PrintList();
+        // Node fourth=new Node(2);
+        // third.next=fourth;
+        // third.next.next=new Node(10);
         //lld.PrintList();
         //fourth.next=head;
         //lld.AddNodeAfterGivenNode(4, 3);
@@ -541,7 +706,9 @@ public class LinkedList{
         //lld.PrintList();
         //lld.head = lld.RotateLinkedList(3);
         //lld.PrintList();
-        lld.FindMiddleNode();
+        //lld.FindMiddleNode();
+       // int loopSize=lld.DetectLengthOfLoop(lld.head);
+        //Console.WriteLine(loopSize);
         Console.ReadLine();
 
     }

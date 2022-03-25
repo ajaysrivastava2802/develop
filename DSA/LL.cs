@@ -639,12 +639,137 @@ public class LinkedList{
                 }
             }
     }
+    public void DeleteDuplicatesUnsortedLinkedList(Node head)
+    {
+        Node currNode=head;
+        HashSet<int> set=new HashSet<int>();
+        Node prev=null;
+        while(currNode!=null)
+        {
+            if(set.Contains(currNode.data))
+            {
+                prev.next=currNode.next;
+            }
+            else{
+                set.Add(currNode.data);
+                prev=currNode;
+            }
+            currNode=currNode.next;
+        }
+    }
+    public void PairWiseSwap(Node head)
+    {
+        Node currNode=head;
+        while(currNode!=null && currNode.next!=null)
+        {
+            int temp=currNode.data;
+            currNode.data=currNode.next.data;
+            currNode.next.data=temp;
+            currNode=currNode.next.next;
+        }
+    }
+    //Pair wise swap recursive approach
+    public void PairWiseSwapRecursive(Node head)
+    {
+        if(head!=null && head.next!=null)
+        {
+            int temp=head.data;
+            head.data=head.next.data;
+            head.next.data=temp;
+            PairWiseSwapRecursive(head.next.next);
+        }
+    }
+    public Node MoveLastElementAtFirst(Node head)
+    {
+        Node lastNode=null;
+        Node currNode=head;
+        Node prevNode=null;
+        while(currNode.next!=null)
+        {
+            prevNode=currNode;
+            currNode=currNode.next;
+        }
+        lastNode=currNode;
+        prevNode.next=null;
+        lastNode.next=head;
+        head=lastNode;
+        return head;
+    }
+    public Node IntersectionList(Node list1, Node list2)
+    {
+        Node dummyNode=new Node(-1);
+        Node tail=dummyNode;
+        HashSet<int> set=new HashSet<int>();
+        while(list1!=null)
+        {            
+            set.Add(list1.data);
+            list1=list1.next;
+        }
+        while(list2!=null)
+        {
+            if(set.Contains(list2.data))
+            {
+                tail.next=list2;
+                tail=tail.next;
+            }
+            list2=list2.next;
+        }
+        tail.next=null;
+        return dummyNode.next;
+    }
+    //The below method is not efficient, as its performance will get degraded if one of the list is large.
+    public int GetIntersectionPoint(Node list1, Node list2)
+    {
+        HashSet<Node> set=new HashSet<Node>();
+        int intersectionPoint=-1;
+        while(list1!=null)
+        {            
+            set.Add(list1);
+            list1=list1.next;
+        }
+        while(list2!=null)
+        {
+            if(set.Contains(list2))
+            {
+                intersectionPoint=list2.data;
+                break;
+            }
+            list2=list2.next;
+        }
+        return intersectionPoint;
+    }
+    //Very much important
+    public int GetIntersectionPoint2Pointer(Node head1, Node head2)
+    {
+        Node ptr1=head1;
+        Node ptr2=head2;
+        int intersectionPoint=-1;
+        if(ptr1==null && ptr2==null)
+        {
+            return -1;
+        }
+        while(ptr1!=ptr2)
+        {
+            ptr1=ptr1.next;
+            ptr2=ptr2.next;
+            if(ptr1 == ptr2){
+                intersectionPoint = ptr1.data;
+            }
+            if(ptr1==null){
+                ptr1=head2;
+            }
+            if(ptr2==null){
+                ptr2=head1;
+            }
+        }
+        return intersectionPoint;
+    }
     public static void Main(String[] args)
     {
         LinkedList lld=new LinkedList();
         lld.head = new Node(8);
         Node second= new Node(5);
-        Node third= new Node(5);
+        Node third= new Node(2);
         lld.head.next = second;
         second.next = third;
         //lld.head=lld.AddNodeAtLast(15);
@@ -655,12 +780,17 @@ public class LinkedList{
         Node m=new Node(4);
         third.next=m;
         //m.next=second;
-        Node n=new Node(3);
+        Node n=new Node(10);
         m.next=n;
+        n.next= new Node(3);
         //bool checkPal=lld.IfPalindromeAnother(lld.head);
         //Console.WriteLine(checkPal);
-        lld.DeleteDuplicatesSortedLinkedList(lld.head);
-        lld.PrintList();
+        //lld.DeleteDuplicatesSortedLinkedList(lld.head);
+        //lld.DeleteDuplicatesUnsortedLinkedList(lld.head);
+        //lld.PairWiseSwapRecursive(lld.head);
+        //lld.head=lld.MoveLastElementAtFirst(lld.head);
+        //lld.PrintList();
+        //lld.PrintList();
        // lld.PrintList();
         // Node fourth=new Node(2);
         // third.next=fourth;
@@ -693,10 +823,14 @@ public class LinkedList{
         //lld.ReverseList();
        // lld.head=lld.MergeDivide(lld.head);
         //lld.PrintList();
-        // LinkedList lldSecond= new LinkedList();
-        // lldSecond.head=new Node(1);
-        // lldSecond.head.next = new Node(6);
-        // lldSecond.head.next.next = new Node(12);
+        LinkedList lldSecond= new LinkedList();
+        lldSecond.head=new Node(1);
+        lldSecond.head.next = new Node(5);
+        lldSecond.head.next.next = new Node(2);
+        lldSecond.head.next.next.next=second;
+        //lld.head=lld.IntersectionList(lld.head, lldSecond.head);
+        int intersectionPoint= lld.GetIntersectionPoint2Pointer(lld.head, lldSecond.head);
+        Console.WriteLine(intersectionPoint);
         // lldSecond.PrintList();
         // lld.head = lld.MergeSortedLists(lld.head, lldSecond.head);
         // lld.PrintList();
